@@ -10,15 +10,17 @@ fn main() {
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs(); // What's the use of this timestamp here?
-    let your_command = format!(
-        "Your command here with {}, please checkout exercises/tests/build.rs",
-        timestamp
-    );
+    // The timestamp ensures the build script is re-run every time,
+    // because its output changes. This forces the environment variable
+    // to be updated on each build.
+    let your_command = format!("rustc-env=TEST_FOO={}", timestamp);
     println!("cargo:{}", your_command);
 
     // In tests8, we should enable "pass" feature to make the
     // testcase return early. Fill in the command to tell
     // Cargo about that.
-    let your_command = "Your command here, please checkout exercises/tests/build.rs";
+    // This tells the compiler to act as if `--cfg pass` was passed to it.
+    // This will enable any code annotated with `#[cfg(pass)]`.
+    let your_command = "rustc-cfg=feature = \"pass\"";
     println!("cargo:{}", your_command);
 }
